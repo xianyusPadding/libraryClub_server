@@ -1,9 +1,13 @@
 const mongoose = require('mongoose')
-// const { resolve } = require('path')
-const db = 'mongodb://localhost/library-test'
+const db = 'mongodb://localhost/libraryClub'
+const glob = require('glob')
+const { resolve } = require('path')
 
 mongoose.Promise = global.Promise
 
+exports.initSchemas = () => {
+  glob.sync(resolve(__dirname, './schema/', '**/*.js')).forEach(require)
+}
 exports.connect = () => {
   let maxConnectTimes = 0
 
@@ -36,13 +40,6 @@ exports.connect = () => {
     })
   
     mongoose.connection.on('open', err => {
-      const dog = mongoose.model('Dog', { name: String })
-      const doga = new dog({ name: 'aaa' })
-
-      doga.save().then(() => {
-        console.log('wang')
-      })
-
       resolve()
       console.log('MongoDB connected successfully!')
     })
