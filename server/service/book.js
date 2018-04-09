@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-// const Book = mongoose.model('Book')
 
 export const getAllBooks = async (category, pageSize, sort, currPage, easyState) => {
   const Book = mongoose.model('Book')
@@ -19,19 +18,19 @@ export const getAllBooks = async (category, pageSize, sort, currPage, easyState)
   if(sort) {
     if(sort === 'recommend'){
       sort_query = {
-        'recommend_num': 1
+        'recommend_num': -1
       }
     } else if(sort === 'collection'){
       sort_query = {
-        'collection_num': 1
+        'collection_num': -1
       }
     } else if(sort === 'read'){
       sort_query = {
-        'read_num': 1
+        'read_num': -1
       }
     } else if(sort === 'sale'){
       sort_query = {
-        'sale_num': 1
+        'sale_num': -1
       }
     }
   }
@@ -40,6 +39,14 @@ export const getAllBooks = async (category, pageSize, sort, currPage, easyState)
   const books = await Book.find(tag_query, filter).sort(sort_query).skip((curr_page - 1) * page_size).limit(page_size)
   
   return books
+}
+
+export const getBooksCount = async () => {
+  const Book = mongoose.model('Book')
+  const books = await Book.find({})
+  const count = books.length
+
+  return count
 }
 
 export const getBookDetail = async (id) => {
@@ -59,4 +66,8 @@ export const getRelativeBooks = async (book) => {
   })
 
   return books
+}
+
+export const tagNameToGetBooks = async (tagName) => {
+  const Book = mongoose.model('Book')
 }

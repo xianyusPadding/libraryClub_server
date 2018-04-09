@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const Schema = mongoose.Schema
-const Mixed = Schema.Types.Mixed
+const { Mixed, ObjectId } = Schema.Types
 const SALT_WORK_FACTOR = 10
 
 const userSchema = new Schema({
@@ -9,11 +9,28 @@ const userSchema = new Schema({
     unique: true,
     type: String
   },
-  email: {
+  phone: {
     unique: true,
     type: String
   },
   password: String,
+  buyBooks: [{
+    type: ObjectId,
+    default: 'Book'
+  }],                 
+  recommendBooks: [{
+    type: ObjectId,
+    default: 'Book'
+  }],
+  collectedBooks: [{
+    type: ObjectId,
+    default: 'Book'
+  }],
+  readBooks: [{
+    type: ObjectId,
+    default: 'Book'
+  }],
+
   meta: {
     createdAt: {
       type: Date,
@@ -37,29 +54,27 @@ userSchema.pre('save', function(next) {
 })
 
 userSchema.pre('save', function(next) {
+  let user = this
   //isModified判断字段是否发生改变
-  if(user.isModified('password')) return next()
+  if(!user.isModified('password')) return next()
   //bcrypt加密库  SALT_WORK_FACTOR越大加密越强
   bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
-    if(err) return next(err)
+    if (err) return next(err)
 
     bcrypt.hash(user.password, salt, (error, hash) => {
-      if(error) return next(error)
-
-      this.password = hash
+      if (error) return next(error)
+      user.password = hash
       next()
     })
   })
-
-  next()
 })
 
 userSchema.methods = {
   //比较密码
-  comparePassword: (_password, password) => {
+  comparePassword: function (_password, password) {
     return new Promise((resolve, reject) => {
-      bcrypt.compare(_password, password, (err, isMatch) => {
-        if(!err) resolve(isMatch)
+      bcrypt.compare(_password, password, function (err, isMatch) {
+        if (!err) resolve(isMatch)
         else reject(err)
       })
     })

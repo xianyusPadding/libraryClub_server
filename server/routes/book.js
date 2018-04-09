@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const router = new Router({
   prefix: '/api/v0'
 })
-const { getAllBooks, getBookDetail, getRelativeBooks } = require('../service/book')
+const { getAllBooks, getBookDetail, getRelativeBooks, getBooksCount } = require('../service/book')
 
 router.get('/books/all', async (ctx, next) => {
   console.log(ctx.query)
@@ -11,8 +11,10 @@ router.get('/books/all', async (ctx, next) => {
   const { category, pageSize, sort, currPage, easyState } = ctx.query
   
   const books = await getAllBooks(category, pageSize, sort, currPage, easyState)
+  const count = await getBooksCount()
 
   ctx.body = {
+    count,
     books
   }
 })

@@ -39,7 +39,11 @@ const bookScheme = new Schema({
       type: Date,
       default: Date.now()
     }
-  }
+  },
+  user: [{
+    type: ObjectId,
+    ref: 'User'
+  }]
 })
 
 //在bookSchema保存前的操作
