@@ -10,7 +10,7 @@ const orderScheme = new Schema({
   }],
   totalPrice: String,
   address: String,
-  user: [{
+  users: [{
     type: ObjectId,
     ref: 'User'
   }],

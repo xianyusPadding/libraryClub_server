@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const router = new Router({
   prefix: '/api/v0/user'
 })
-const { checkPassword, register, loginState, userAction, userActionMess } = require('../service/user')
+const { checkPassword, register, loginState, userAction, userActionMess, userArticleAction, userArticleMess, userDetail } = require('../service/user')
 
 router.post('/login', async (ctx, next) => {
   const { phone, password } = ctx.request.body
@@ -62,6 +62,29 @@ router.get('/actionState', async (ctx, next) => {
   const { phone, bookId } = ctx.query
   
   const data = await userActionMess( phone, bookId )
+
+  return ctx.body = data
+})
+
+router.get('/article/actions', async (ctx, next) => {
+  const { action, phone, articleId } = ctx.query
+  
+  const data = await userArticleAction(action, phone, articleId)
+
+  return ctx.body = data
+})
+
+router.get('/article/actionState', async (ctx, next) => {
+  const { phone, articleId } = ctx.query
+  
+  const data = await userArticleMess( phone, articleId )
+
+  return ctx.body = data
+})
+
+router.get('/detail', async (ctx, next) => {
+  const { phone } = ctx.query
+  const data = await userDetail(phone)
 
   return ctx.body = data
 })

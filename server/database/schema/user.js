@@ -13,22 +13,44 @@ const userSchema = new Schema({
     unique: true,
     type: String
   },
+  avater: String,
   password: String,
+  introduction: String,
   buyBooks: [{
     type: ObjectId,
-    default: 'Book'
+    ref: 'Book'
   }],                 
   recommendBooks: [{
     type: ObjectId,
-    default: 'Book'
+    ref: 'Book'
   }],
   collectedBooks: [{
     type: ObjectId,
-    default: 'Book'
+    ref: 'Book'
   }],
   readBooks: [{
     type: ObjectId,
-    default: 'Book'
+    ref: 'Book'
+  }],
+  orders: [{
+    type: ObjectId,
+    ref: 'Order'
+  }],
+  articles: [{
+    type: ObjectId,
+    ref: 'Article'
+  }],
+  recommendArticles: [{
+    type: ObjectId,
+    ref: 'Article'
+  }],
+  collectedArticles: [{
+    type: ObjectId,
+    ref: 'Article'
+  }],
+  readArticles: [{
+    type: ObjectId,
+    ref: 'Article'
   }],
 
   meta: {
@@ -55,7 +77,7 @@ userSchema.pre('save', function(next) {
 
 userSchema.pre('save', function(next) {
   let user = this
-  //isModified判断字段是否发生改变
+  //isModified判断password字段是否发生改变
   if(!user.isModified('password')) return next()
   //bcrypt加密库  SALT_WORK_FACTOR越大加密越强
   bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {

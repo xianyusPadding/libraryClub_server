@@ -40,7 +40,13 @@ export const register = async (userName, phone, password) => {
     User.create({
       userName: userName,
       phone: phone,
-      password: password
+      password: password,
+      introduction: '',
+      avater: ''
+    }, function (err, jellybean, snickers) {
+      if (err) {
+        console.log(err)
+      }
     })
   }
 
@@ -77,7 +83,7 @@ export const userAction = async (action, phone, bookId) => {
   if(user){
     switch (action) {
       case 'recommend': 
-        if(user.recommendBooks.indexOf(bookId) > -1){
+        if(user.recommendBooks.indexOf(bookId) === -1){
           await User.update({
             phone: phone
           },{
@@ -97,7 +103,7 @@ export const userAction = async (action, phone, bookId) => {
         }
         break;
       case 'collect': 
-        if(user.collectedBooks.indexOf(bookId) > -1){
+        if(user.collectedBooks.indexOf(bookId) === -1){
           await User.update({
             phone: phone
           },{
@@ -116,7 +122,7 @@ export const userAction = async (action, phone, bookId) => {
         }
         break;
       case 'read': 
-        if(user.readBooks.indexOf(bookId) > -1){
+        if(user.readBooks.indexOf(bookId) === -1){
           await User.update({
             phone: phone
           },{
@@ -158,5 +164,115 @@ export const userActionMess = async (phone, bookId) => {
     recomend_state: recomend_state,
     collect_state: collect_state,
     buy_state: buy_state    
+  }
+}
+
+export const userArticleAction = async (action, phone, articleId) => {
+  const User = mongoose.model('User')
+  const Article = mongoose.model('Article')
+  const user = await User.findOne({
+    phone: phone
+  })
+  const article = await Article.findOne({
+    _id: articleId
+  })
+  
+  if(user){
+    switch (action) {
+      case 'recommend': 
+        if(user.recommendArticles.indexOf(articleId) === -1){
+          await User.update({
+            phone: phone
+          },{
+            $push: {
+              recommendArticles: articleId
+            }
+          });
+        }
+        await Article.update({
+          _id: articleId
+        }, {
+          recommend_num: article.recommend_num + 1
+        })
+
+        return {
+          code: 0
+        }
+        break;
+      case 'collect': 
+        if(user.collectedArticles.indexOf(articleId) === -1){
+          await User.update({
+            phone: phone
+          },{
+            $push: {
+              collectedArticles: articleId
+            }
+          });
+        }
+        await Article.update({
+          _id: articleId
+        }, {
+          collection_num: article.collection_num + 1
+        });
+        return {
+          code: 0
+        }
+        break;
+      case 'read': 
+        if(user.readArticles.indexOf(articleId) === -1){
+          await User.update({
+            phone: phone
+          },{
+            $push: {
+              readArticles: articleId
+            }
+          });
+        }
+        await Article.update({
+          _id: articleId
+        }, {
+          read_num: article.read_num + 1
+        });
+
+        return {
+          code: 0
+        }
+        break;
+      default: break;
+    }
+  }else{
+    return {
+      code: -1
+    }
+  }
+}
+
+export const userArticleMess = async (phone, articleId) => {
+  const User = mongoose.model('User')
+  const Article = mongoose.model('Article')
+
+  const user = await User.findOne({ phone: phone })
+  
+  let recomend_state = user.recommendArticles.indexOf(articleId) > -1 ? 1 : 0
+  let collect_state = user.collectedArticles.indexOf(articleId) > -1 ? 1 : 0
+
+  return {
+    recomend_state: recomend_state,
+    collect_state: collect_state   
+  }
+}
+
+export const userDetail = async (phone) => {
+  const User = mongoose.model('User')
+  const user = await User.findOne({ phone: phone }, {userName: 1, avater: 1, introduction: 1, 'meta.createdAt': 1})
+
+  let book_data = await User.findOne({ phone: phone }).populate({ path: 'buyBooks readBooks', select: { title: 1, img_url: 1, author: 1, translator: 1, _id: 1}})
+
+  let {buyBooks = [], readBooks = []} = book_data
+
+  return {
+    user: user,
+    buyBooks: buyBooks,
+    readBooks: readBooks
   }
 }

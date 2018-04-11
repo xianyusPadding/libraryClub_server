@@ -11,8 +11,9 @@ const articleScheme = new Schema({
   writeTime: String,
   content: String,
   summary: String,
-  recomend_num: Number,
-  collect_num: Number,
+  recommend_num: Number,
+  collection_num: Number,
+  read_num: Number,
   meta: {
     createdAt: {
       type: Date,

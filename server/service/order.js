@@ -12,8 +12,21 @@ export const submitOrder = async (books, address, phone, totalPrice) => {
     Order.create({
       books: books,
       address: address,
-      userId: user._id,
+      user: user._id,
       totalPrice: totalPrice
+    }).then((new_reply) => {
+      let orderId = new_reply._id
+
+      if(new_reply.users.indexOf(user._id) === -1){
+        new_reply.save({
+          users: new_reply.users.push(user._id)
+        })
+      }
+      if(user.orders.indexOf(orderId) === -1){
+        user.save({
+          orders: user.orders.push(orderId)
+        })
+      }
     })
   }else{
     return {
@@ -28,11 +41,9 @@ export const submitOrder = async (books, address, phone, totalPrice) => {
       _id: val._id
     })
     
-    if(user.buyBooks.indexOf(val._id) > -1){
+    if(user.buyBooks.indexOf(val._id) === -1){
       user.save({
-        $push: {
-          buyBooks: bookId
-        }
+        buyBooks: user.buyBooks.push(val._id)
       })
     }
 

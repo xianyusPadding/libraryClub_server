@@ -17,6 +17,10 @@ export const getAllArticle = async (pageSize, sort, currPage, easyState) => {
       sort_query = {
         'collect_num': -1
       }
+    } else if(sort === 'read'){
+      sort_query = {
+        'read_num': -1
+      }
     }
   }else{
     sort_query = {

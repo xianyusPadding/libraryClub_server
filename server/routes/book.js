@@ -1,12 +1,11 @@
 const Router = require('koa-router')
 const mongoose = require('mongoose')
 const router = new Router({
-  prefix: '/api/v0'
+  prefix: '/api/v0/books'
 })
 const { getAllBooks, getBookDetail, getRelativeBooks, getBooksCount } = require('../service/book')
 
-router.get('/books/all', async (ctx, next) => {
-  console.log(ctx.query)
+router.get('/all', async (ctx, next) => {
   //传入一个query category是类别 pageSize是每页的数量 sort是排序的方法  currPage当前页数量 easyState是否只取简单数据
   const { category, pageSize, sort, currPage, easyState } = ctx.query
   
@@ -19,7 +18,19 @@ router.get('/books/all', async (ctx, next) => {
   }
 })
 
-router.get('/books/detail/:id', async (ctx, next) => {
+router.get('/ready', async (ctx, next) => {
+  const Book = mongoose.model('Book')
+  const books = await Book.find({
+    publication_state: '正在印刷'
+  }, {'title': 1, 'img_url': 1, 'author': 1, 'translator': 1} ).sort({'meta.createdAt': -1}).limit(10)
+
+  ctx.body = {
+    code: 0,
+    books
+  }
+})
+
+router.get('/detail/:id', async (ctx, next) => {
   const id = ctx.params.id
   const book = await getBookDetail(id)
 

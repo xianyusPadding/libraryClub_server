@@ -37,8 +37,9 @@ const Article = mongoose.model('Article')
     })
 
     article.content = article_item_data.content
-    article.recomend_num = 0
-    article.collect_num = 0
+    article.recommend_num = 0
+    article.collection_num = 0
+    article.read_num = 0
 
      
     await article.save()
