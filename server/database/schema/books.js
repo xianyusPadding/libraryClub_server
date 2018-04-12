@@ -50,6 +50,10 @@ const bookScheme = new Schema({
 bookScheme.pre('save', function(next) {
   if(this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now()
+    this.recommend_num = 0
+    this.collection_num = 0
+    this.read_num = 0
+    this.sale_num = 0
   } else {
     this.meta.updatedAt = Date.now()
   }

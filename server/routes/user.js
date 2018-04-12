@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const router = new Router({
   prefix: '/api/v0/user'
 })
-const { checkPassword, register, loginState, userAction, userActionMess, userArticleAction, userArticleMess, userDetail } = require('../service/user')
+const { checkPassword, register, loginState, userAction, userActionMess, userArticleAction, userArticleMess, userDetail, submitArticle } = require('../service/user')
 
 router.post('/login', async (ctx, next) => {
   const { phone, password } = ctx.request.body
@@ -22,7 +22,8 @@ router.post('/login', async (ctx, next) => {
       code: 0,
       message: '登陆成功',
       phone: matchData.user.phone,
-      password: matchData.user.password
+      password: matchData.user.password,
+      _id: matchData.user._id
     })
   }
 
@@ -85,6 +86,13 @@ router.get('/article/actionState', async (ctx, next) => {
 router.get('/detail', async (ctx, next) => {
   const { phone } = ctx.query
   const data = await userDetail(phone)
+
+  return ctx.body = data
+})
+
+router.post('/article', async (ctx, next) => {
+  const { userId, title, content, summary } = ctx.request.body
+  const data = await submitArticle(userId, title, content, summary)
 
   return ctx.body = data
 })

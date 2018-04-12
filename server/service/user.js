@@ -268,11 +268,57 @@ export const userDetail = async (phone) => {
 
   let book_data = await User.findOne({ phone: phone }).populate({ path: 'buyBooks readBooks', select: { title: 1, img_url: 1, author: 1, translator: 1, _id: 1}})
 
+  let article_data = await User.findOne({ phone: phone }).populate({ path: 'readArticles', select: { title: 1, author: 1, writeTime: 1, _id: 1}})
+
   let {buyBooks = [], readBooks = []} = book_data
+
+  let readArticles = article_data.readArticles
 
   return {
     user: user,
     buyBooks: buyBooks,
-    readBooks: readBooks
+    readBooks: readBooks,
+    readArticles: readArticles
   }
+}
+
+function formatDate(Date){
+  if(Date){
+    let year = Date.split('-')[0]
+    let month = Date.split('-')[1]
+    let day = Date.split('-')[2]
+
+    if(month < 10){
+      month = '0' + String(month)
+    }
+    if(day < 10){
+      day = '0' + String(day)
+    }
+
+    return `${year}-${month}-${day}`
+  }
+}
+
+export const submitArticle = async (userId, title, content, summary) => {
+  const User = mongoose.model('User')
+  const Article = mongoose.model('Article')
+
+  const user = await User.findOne({ _id: userId })
+  const d = new Date()
+
+  Article.create({
+    title: title,
+    type_id: 2,
+    author: user.userName,
+    avater: user.avater,
+    writeTime: formatDate(`${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`),
+    content: content,
+    summary: summary,
+    user: userId
+  })
+  
+  return {
+    code: 0
+  }
+  
 }

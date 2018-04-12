@@ -14,6 +14,7 @@ const articleScheme = new Schema({
   recommend_num: Number,
   collection_num: Number,
   read_num: Number,
+  type_id: Number,
   meta: {
     createdAt: {
       type: Date,
@@ -24,7 +25,7 @@ const articleScheme = new Schema({
       default: Date.now()
     }
   },
-  user: {
+  user: {                          //文章作者的id
     type: ObjectId,
     ref: 'User'
   }
@@ -34,6 +35,9 @@ const articleScheme = new Schema({
 articleScheme.pre('save', function(next) {
   if(this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now()
+    this.recommend_num = 0
+    this.collection_num = 0
+    this.read_num = 0
   } else {
     this.meta.updatedAt = Date.now()
   }

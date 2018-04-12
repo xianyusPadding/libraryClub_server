@@ -40,6 +40,7 @@ const Article = mongoose.model('Article')
     article.recommend_num = 0
     article.collection_num = 0
     article.read_num = 0
+    article.type_id = 1
 
      
     await article.save()
