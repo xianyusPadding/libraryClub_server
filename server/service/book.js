@@ -71,3 +71,19 @@ export const getRelativeBooks = async (book) => {
 export const tagNameToGetBooks = async (tagName) => {
   const Book = mongoose.model('Book')
 }
+
+export const updateBook = async (bookId, data) => {
+  const Book = mongoose.model('Book')
+
+  let code = await Book.update({ _id: bookId }, { $set: data });
+
+  return code
+}
+
+export const removeBook = async (bookId) => {
+  const Book = mongoose.model('Book')
+
+  let code = await Book.remove({ _id: bookId });
+
+  return code
+}

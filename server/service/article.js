@@ -64,3 +64,19 @@ export const getArticleDetail = async (id) => {
 
   return article
 }
+
+export const removeArticle = async (articleId) => {
+  const Article = mongoose.model('Article')
+
+  let code = await Article.remove({ _id: articleId });
+
+  return code
+}
+
+export const updateArticle = async (articleId, data) => {
+  const Article = mongoose.model('Article')
+
+  let code = await Article.update({ _id: articleId }, { $set: data });
+
+  return code
+}
