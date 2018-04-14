@@ -6,14 +6,11 @@ const router = new Router({
 const { getAllArticle, getArticlesCount, getArticleDetail, removeArticle, updateArticle } = require('../service/article')
 
 router.get('/all', async (ctx, next) => {
-  const { pageSize, sort, currPage, easyState, typeId, userId } = ctx.query
-  const articles = await getAllArticle(pageSize, sort, currPage, easyState, typeId, userId)
-  const count = await getArticlesCount(typeId, userId)
+  const { pageSize, sort, currPage, easyState, typeId, userId, search_content } = ctx.query
+  const data = await getAllArticle(pageSize, sort, currPage, easyState, typeId, userId, search_content)
+  // const count = await getArticlesCount(typeId, userId)
 
-  ctx.body = {
-    articles,
-    count: count
-  }
+  ctx.body = data
 })
 
 router.get('/detail/:id', async (ctx, next) => {

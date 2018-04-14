@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const router = new Router({
   prefix: '/api/v0/user'
 })
-const { checkPassword, register, loginState, userAction, userActionMess, userArticleAction, userArticleMess, userDetail, submitArticle } = require('../service/user')
+const { checkPassword, register, loginState, userAction, userActionMess, userArticleAction, userArticleMess, userDetail, submitArticle, allUser } = require('../service/user')
 
 router.post('/login', async (ctx, next) => {
   const { phone, password } = ctx.request.body
@@ -37,6 +37,13 @@ router.post('/register', async (ctx, next) => {
   const { userName, phone, password } = ctx.request.body
   
   const data = await register(userName, phone, password)
+
+  return ctx.body = data
+})
+
+router.get('/all', async (ctx, next) => {
+  const {pageSize, currPage} = ctx.query
+  const data = await allUser(pageSize, currPage)
 
   return ctx.body = data
 })
@@ -95,6 +102,40 @@ router.post('/article', async (ctx, next) => {
   const data = await submitArticle(userId, title, content, summary)
 
   return ctx.body = data
+})
+
+router.post('/power', async (ctx, next) => {
+  const { userId, power } = ctx.request.body
+  // const data = await submitArticle(userId)
+  const User = mongoose.model('User')
+  let data = await User.update({
+    _id: userId
+  }, {
+    power: power
+  })
+
+  return ctx.body = data
+})
+
+router.get('/getPowerState', async (ctx, next) => {
+  const { userId } = ctx.query
+  const User = mongoose.model('User')
+  let user = await User.findOne({
+    _id: userId
+  })
+
+  return ctx.body = {
+    power: user.power
+  }
+})
+
+router.post('/remove', async (ctx, next) => {
+  const { userId } = ctx.request.body
+  const User = mongoose.model('User')
+
+  let code = await User.remove({ _id: userId });
+
+  return ctx.body = code
 })
 
 module.exports = router

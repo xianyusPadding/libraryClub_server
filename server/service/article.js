@@ -1,7 +1,9 @@
 const mongoose = require('mongoose')
 
-export const getAllArticle = async (pageSize, sort, currPage, easyState, typeId, userId) => {
+export const getAllArticle = async (pageSize, sort, currPage, easyState, typeId, userId, search_content) => {
   const Article = mongoose.model('Article')
+
+  let tag_query = {}
   let sort_query = {}
   let page_size = Number(pageSize) || 10
   let curr_page = Number(currPage) || 1
@@ -30,15 +32,23 @@ export const getAllArticle = async (pageSize, sort, currPage, easyState, typeId,
     }
   }
 
-  let articles = []
-
-  if(user_id){
-    articles = await Article.find({ user: user_id }, filter).sort(sort_query).skip((curr_page - 1) * page_size).limit(page_size)
-  }else {
-    articles = await Article.find({ type_id: type_id }, filter).sort(sort_query).skip((curr_page - 1) * page_size).limit(page_size)
+  user_id ? tag_query.user = user_id : ''
+   
+  if(search_content){
+    let searchReg = new RegExp(search_content)
+    tag_query.title = searchReg
   }
+
+  tag_query.type_id = type_id
   
-  return articles
+
+  const articles = await Article.find(tag_query, filter).sort(sort_query).skip((curr_page - 1) * page_size).limit(page_size)
+  const allArticles = await Article.find(tag_query, filter).sort(sort_query)
+  
+  return {
+    articles: articles,
+    count: allArticles.length
+  }
 }
 
 export const getArticlesCount = async (typeId, userId) => {

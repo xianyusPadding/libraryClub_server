@@ -7,15 +7,11 @@ const { getAllBooks, getBookDetail, getRelativeBooks, getBooksCount, updateBook,
 
 router.get('/all', async (ctx, next) => {
   //传入一个query category是类别 pageSize是每页的数量 sort是排序的方法  currPage当前页数量 easyState是否只取简单数据
-  const { category, pageSize, sort, currPage, easyState } = ctx.query
+  const { category, pageSize, sort, currPage, easyState, search_content } = ctx.query
   
-  const books = await getAllBooks(category, pageSize, sort, currPage, easyState)
-  const count = await getBooksCount()
+  const data = await getAllBooks(category, pageSize, sort, currPage, easyState, search_content)
 
-  ctx.body = {
-    count,
-    books
-  }
+  ctx.body = data
 })
 
 router.get('/ready', async (ctx, next) => {

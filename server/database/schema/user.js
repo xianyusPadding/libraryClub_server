@@ -16,6 +16,7 @@ const userSchema = new Schema({
   avater: String,
   password: String,
   introduction: String,
+  power: Number,
   buyBooks: [{
     type: ObjectId,
     ref: 'Book'
@@ -68,6 +69,7 @@ const userSchema = new Schema({
 userSchema.pre('save', function(next) {
   if(this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now()
+    this.power = 1
   } else {
     this.meta.updatedAt = Date.now()
   }

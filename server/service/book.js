@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-export const getAllBooks = async (category, pageSize, sort, currPage, easyState) => {
+export const getAllBooks = async (category, pageSize, sort, currPage, easyState, search_content) => {
   const Book = mongoose.model('Book')
   let sort_query = {}
   let tag_query = {}
@@ -13,6 +13,11 @@ export const getAllBooks = async (category, pageSize, sort, currPage, easyState)
     tag_query.category = {
       $in: [category]
     }
+  }
+
+  if(search_content) {
+    let searchReg = new RegExp(search_content)
+    tag_query.title = searchReg
   }
 
   if(sort) {
@@ -35,18 +40,13 @@ export const getAllBooks = async (category, pageSize, sort, currPage, easyState)
     }
   }
 
-
   const books = await Book.find(tag_query, filter).sort(sort_query).skip((curr_page - 1) * page_size).limit(page_size)
+  const allBooks = await Book.find(tag_query, filter).sort(sort_query)
   
-  return books
-}
-
-export const getBooksCount = async () => {
-  const Book = mongoose.model('Book')
-  const books = await Book.find({})
-  const count = books.length
-
-  return count
+  return {
+    books: books,
+    count: allBooks.length
+  }
 }
 
 export const getBookDetail = async (id) => {

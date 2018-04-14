@@ -11,15 +11,16 @@ const bodyparser = require('koa-bodyparser')
 ;(async () => {
   await connect()
 
-  initSchemas()                    //初始化schemas
+  initSchemas()                           //初始化schemas
 
-  // require('./trasks/books')        //初始化books的内容
-  // require('./trasks/book_detail')  //获取books的精细内容
-  // require('./trasks/tags_init.js') //初始化books的分类tags、初始化tags表的内容
-  // require('./trasks/articles-list')//初始化articles的内容
-  // require('./trasks/article-detail.js')    //初始化articlesd的精细内容
+  // require('./trasks/books')            //初始化books的内容
+  // require('./trasks/book_detail')      //获取books的精细内容
+  // require('./trasks/tags_init.js')     //初始化books的分类tags、初始化tags表的内容
+  // require('./trasks/articles-list')    //初始化articles的内容
+  // require('./trasks/article-detail.js')//初始化articlesd的精细内容
   
   const app = new Koa()
+  
   
   app
     .use(bodyparser())

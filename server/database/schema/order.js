@@ -10,10 +10,13 @@ const orderScheme = new Schema({
   }],
   totalPrice: String,
   address: String,
-  users: [{
+  userName: String,
+  phone: String,
+  state: Number,
+  userId: {
     type: ObjectId,
     ref: 'User'
-  }],
+  },
   meta: {
     createdAt: {
       type: Date,
@@ -30,6 +33,7 @@ const orderScheme = new Schema({
 orderScheme.pre('save', function(next) {
   if(this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now()
+    this.state = 1
   } else {
     this.meta.updatedAt = Date.now()
   }

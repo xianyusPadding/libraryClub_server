@@ -56,6 +56,22 @@ export const register = async (userName, phone, password) => {
   }
 }
 
+export const allUser = async(pageSize, currPage) => {
+  const User = mongoose.model('User')
+
+  let page_size = Number(pageSize) || 10
+  let curr_page = Number(currPage) || 1
+
+  const users = await User.find({}).skip((curr_page - 1) * page_size).limit(page_size)
+
+  const allUsers = await User.find({})
+
+  return {
+    user: users,
+    count: allUsers.length
+  }
+}
+
 export const loginState = async(phone, password) => {
   const User = mongoose.model('User')
   const user = await User.find({
@@ -264,7 +280,7 @@ export const userArticleMess = async (phone, articleId) => {
 
 export const userDetail = async (phone) => {
   const User = mongoose.model('User')
-  const user = await User.findOne({ phone: phone }, {userName: 1, avater: 1, introduction: 1, 'meta.createdAt': 1})
+  const user = await User.findOne({ phone: phone }, {userName: 1, avater: 1, introduction: 1, 'meta.createdAt': 1, power: 1})
 
   let book_data = await User.findOne({ phone: phone }).populate({ path: 'buyBooks readBooks', select: { title: 1, img_url: 1, author: 1, translator: 1, _id: 1}})
 
