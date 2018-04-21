@@ -11,6 +11,7 @@ const TagScheme = new Schema({
     type: ObjectId,
     ref: 'Book'
   }],
+  size: Number,
   meta: {
     createdAt: {
       type: Date,

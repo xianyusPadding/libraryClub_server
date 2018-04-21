@@ -3,13 +3,13 @@ const mongoose = require('mongoose')
 const router = new Router({
   prefix: '/api/v0/books'
 })
-const { getAllBooks, getBookDetail, getRelativeBooks, getBooksCount, updateBook, removeBook } = require('../service/book')
+const { getAllBooks, getBookDetail, getRelativeBooks, getBooksCount, updateBook, removeBook, getBookForCatagory, getAllTags } = require('../service/book')
 
 router.get('/all', async (ctx, next) => {
   //传入一个query category是类别 pageSize是每页的数量 sort是排序的方法  currPage当前页数量 easyState是否只取简单数据
-  const { category, pageSize, sort, currPage, easyState, search_content } = ctx.query
+  const { category, pageSize, sort, currPage, easyState, search_content, tagName } = ctx.query
   
-  const data = await getAllBooks(category, pageSize, sort, currPage, easyState, search_content)
+  const data = await getAllBooks(category, pageSize, sort, currPage, easyState, search_content, tagName)
 
   ctx.body = data
 })
@@ -36,6 +36,15 @@ router.get('/detail/:id', async (ctx, next) => {
     book,
     relativeBooks
   }
+})
+
+router.get('/allTags', async (ctx, next) => {
+  const Tag = mongoose.model('Tag')
+  const { pageSize, currPage } = ctx.query
+  
+  const data = await getAllTags(pageSize, currPage)
+
+  ctx.body = data
 })
 
 router.post('/update', async (ctx, next) => {

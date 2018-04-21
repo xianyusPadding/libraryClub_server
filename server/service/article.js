@@ -35,8 +35,8 @@ export const getAllArticle = async (pageSize, sort, currPage, easyState, typeId,
   user_id ? tag_query.user = user_id : ''
    
   if(search_content){
-    let searchReg = new RegExp(search_content)
-    tag_query.title = searchReg
+    let searchReg = new RegExp(search_content, 'i')
+    tag_query.$or = [{'title': searchReg}, {'summary': searchReg}]
   }
 
   tag_query.type_id = type_id

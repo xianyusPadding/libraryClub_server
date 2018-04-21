@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-export const getAllBooks = async (category, pageSize, sort, currPage, easyState, search_content) => {
+export const getAllBooks = async (category, pageSize, sort, currPage, easyState, search_content, tagName) => {
   const Book = mongoose.model('Book')
   let sort_query = {}
   let tag_query = {}
@@ -16,8 +16,8 @@ export const getAllBooks = async (category, pageSize, sort, currPage, easyState,
   }
 
   if(search_content) {
-    let searchReg = new RegExp(search_content)
-    tag_query.title = searchReg
+    let searchReg = new RegExp(search_content, 'i')
+    tag_query.$or = [{'title': searchReg}, {'intro': searchReg}]    
   }
 
   if(sort) {
@@ -37,6 +37,12 @@ export const getAllBooks = async (category, pageSize, sort, currPage, easyState,
       sort_query = {
         'sale_num': -1
       }
+    }
+  }
+
+  if(tagName){
+    tag_query.category = {
+      $in: [tagName]
     }
   }
 
@@ -86,4 +92,19 @@ export const removeBook = async (bookId) => {
   let code = await Book.remove({ _id: bookId });
 
   return code
+}
+
+export const getAllTags = async (pageSize, currPage) => {
+  const Tag = mongoose.model('Tag')
+  
+  let page_size = Number(pageSize) || 30
+  let curr_page = Number(currPage) || 1
+
+  const tags = await Tag.find({}).sort({ size: -1 }).skip((curr_page - 1) * page_size).limit(page_size)
+  const allTags = await Tag.find({})
+
+  return {
+    tags: tags,
+    count: allTags.length
+  }
 }
