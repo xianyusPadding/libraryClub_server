@@ -21,6 +21,7 @@ router.post('/login', async (ctx, next) => {
     return (ctx.body = {
       code: 0,
       message: '登陆成功',
+      detail: matchData.user,
       phone: matchData.user.phone,
       password: matchData.user.password,
       _id: matchData.user._id
@@ -51,10 +52,10 @@ router.get('/all', async (ctx, next) => {
 router.get('/loginState', async (ctx, next) => {
   const { phone, password } = ctx.query
   
-  const login_state = await loginState(phone, password)
+  const data = await loginState(phone, password)
 
   return ctx.body = {
-    loginState: login_state
+    data: data
   }
 })
 

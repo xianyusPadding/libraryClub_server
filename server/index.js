@@ -6,7 +6,9 @@ const book_router = require('./routes/book')
 const user_router = require('./routes/user')
 const article_router = require('./routes/article')
 const order_router = require('./routes/order')
+const comment_router = require('./routes/comment')
 const bodyparser = require('koa-bodyparser')
+
 
 ;(async () => {
   await connect()
@@ -32,6 +34,8 @@ const bodyparser = require('koa-bodyparser')
     .use(article_router.allowedMethods())
     .use(order_router.routes())
     .use(order_router.allowedMethods())
+    .use(comment_router.routes())
+    .use(comment_router.allowedMethods())
   
   app.listen(4455)
 })()

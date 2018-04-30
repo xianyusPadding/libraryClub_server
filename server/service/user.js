@@ -74,15 +74,20 @@ export const allUser = async(pageSize, currPage) => {
 
 export const loginState = async(phone, password) => {
   const User = mongoose.model('User')
-  const user = await User.find({
+  const user = await User.findOne({
     phone: phone,
-    password :password
+    password: password
   })
 
-  if(user.length > 0){
-    return 1
+  if(user){
+    return {
+      code: 1,
+      user: user
+    }
   }else{
-    return 0
+    return {
+      code: 0
+    }
   }
 }
 
