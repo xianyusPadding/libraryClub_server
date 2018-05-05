@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const router = new Router({
   prefix: '/api/v0/user'
 })
-const { checkPassword, register, loginState, userAction, userActionMess, userArticleAction, userArticleMess, userDetail, submitArticle, allUser } = require('../service/user')
+const { checkPassword, register, loginState, userAction, userActionMess, userArticleAction, userArticleMess, userDetail, submitArticle, allUser, updateMess } = require('../service/user')
+
 
 router.post('/login', async (ctx, next) => {
   const { phone, password } = ctx.request.body
@@ -107,7 +108,7 @@ router.post('/article', async (ctx, next) => {
 
 router.post('/power', async (ctx, next) => {
   const { userId, power } = ctx.request.body
-  // const data = await submitArticle(userId)
+  
   const User = mongoose.model('User')
   let data = await User.update({
     _id: userId
@@ -137,6 +138,14 @@ router.post('/remove', async (ctx, next) => {
   let code = await User.remove({ _id: userId });
 
   return ctx.body = code
+})
+
+router.post('/updateMess', async (ctx, next) => {
+  const { userId, phone, password, avater, introduction  } = ctx.request.body
+
+  let state = await updateMess(userId, phone, password, avater, introduction)
+
+  return ctx.body = state
 })
 
 module.exports = router

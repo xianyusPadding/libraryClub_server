@@ -1,11 +1,8 @@
 # dependencies
 node_modules
 
-# logs
-npm-debug.log
-
-# Nuxt build
-.nuxt
-
-# Nuxt generate
+# 打包文件
 dist
+
+# 文件数据
+upload

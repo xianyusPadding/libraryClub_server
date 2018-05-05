@@ -80,6 +80,7 @@ userSchema.pre('save', function(next) {
 userSchema.pre('save', function(next) {
   let user = this
   //isModified判断password字段是否发生改变
+  console.log(user.isModified('password'))
   if(!user.isModified('password')) return next()
   //bcrypt加密库  SALT_WORK_FACTOR越大加密越强
   bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {

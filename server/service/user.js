@@ -343,3 +343,24 @@ export const submitArticle = async (userId, title, content, summary) => {
   }
   
 }
+
+export const updateMess = async (userId, phone, password, avater, introduction) => {
+  let User = mongoose.model('User')
+  let user = await User.findOne({_id: userId})
+  let data = {}
+
+  if(!user){
+    return {
+      ok: -1,
+      message: '用户不存在'
+    }
+  }
+  phone ? user['phone'] = phone : ''
+  password ? user['password'] = password : ''
+  avater ? user['avater'] = avater : ''
+  introduction ? user['introduction'] = phone : ''
+
+  let state = user.save()
+
+  return state
+}

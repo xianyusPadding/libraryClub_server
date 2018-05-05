@@ -15,6 +15,7 @@ const articleScheme = new Schema({
   collection_num: Number,
   read_num: Number,
   type_id: Number,
+  user_id: ObjectId,
   meta: {
     createdAt: {
       type: Date,

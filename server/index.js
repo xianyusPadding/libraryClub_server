@@ -2,12 +2,17 @@ const Koa = require('koa')
 const mongoose = require('mongoose')
 const { resolve } = require('path')
 const { connect, initSchemas } = require('./database/init')
+const bodyparser = require('koa-bodyparser')
+const koaBody = require('koa-body')
+const koaStatic = require('koa-static')
+
 const book_router = require('./routes/book')
 const user_router = require('./routes/user')
 const article_router = require('./routes/article')
 const order_router = require('./routes/order')
 const comment_router = require('./routes/comment')
-const bodyparser = require('koa-bodyparser')
+const file_router = require('./routes/file')
+
 
 
 ;(async () => {
@@ -22,7 +27,15 @@ const bodyparser = require('koa-bodyparser')
   // require('./trasks/article-detail.js')//初始化articlesd的精细内容
   
   const app = new Koa()
-  
+
+  app.use(koaBody({
+    multipart: true,
+    formidable: {
+        maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
+    }
+  }));
+
+  app.use(koaStatic(__dirname + '\\static'))
   
   app
     .use(bodyparser())
@@ -36,6 +49,9 @@ const bodyparser = require('koa-bodyparser')
     .use(order_router.allowedMethods())
     .use(comment_router.routes())
     .use(comment_router.allowedMethods())
+    .use(file_router.routes())
+    .use(file_router.allowedMethods())
+    
   
   app.listen(4455)
 })()
